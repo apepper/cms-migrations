@@ -2,7 +2,7 @@ require "active_support/all"
 require_relative "rest_api"
 
 class ScrivitoImport
-  def import(dir_name:)
+  def import(dir_name:, workspace_title:)
     base_url = ENV.fetch("SCRIVITO_BASE_URL") { "https://api.scrivito.com" }
     tenant = ENV.fetch("SCRIVITO_TENANT")
     api_key = ENV.fetch("SCRIVITO_API_KEY")
@@ -10,7 +10,7 @@ class ScrivitoImport
 
     visibility_categories_ids_mapping = import_visibility_categories_and_generate_mapping(api, dir_name)
 
-    workspace_id = api.post("workspaces", "workspace" => { "title" => "loader (do not touch)"})["id"]
+    workspace_id = api.post("workspaces", "workspace" => { "title" => workspace_title})["id"]
     puts("Created loader working copy #{workspace_id}")
     old_obj_ids = get_obj_ids(api, workspace_id)
     puts("Deleting #{old_obj_ids.size} old objs")
@@ -122,4 +122,5 @@ class ScrivitoImport
 end
 
 dir_name = ARGV.first or raise "missing dir_name param"
-ScrivitoImport.new.import(dir_name: dir_name)
+workspace_title = ARGV.second or "loader (do not touch)"
+ScrivitoImport.new.import(dir_name: dir_name, workspace_title: workspace_title)
