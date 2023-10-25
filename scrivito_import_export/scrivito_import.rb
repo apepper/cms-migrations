@@ -27,7 +27,8 @@ class ScrivitoImport
       retry_command { api.post("workspaces/#{workspace_id}/objs", "obj" => attrs) }
     end
 
-    api.put("workspaces/#{workspace_id}/publish", nil)
+    puts("Import is done. The working copy #{workspace_id} can now be inspected and manually published in the UI")
+    # api.put("workspaces/#{workspace_id}/publish", nil)
   end
 
   private
