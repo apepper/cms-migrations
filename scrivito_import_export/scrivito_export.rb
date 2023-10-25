@@ -63,7 +63,8 @@ class ScrivitoExport
   def export_binary(api, binary_id, dir_name)
     blob_id = api.normalize_path_component(binary_id)
     url = api.get("blobs/#{blob_id}")["private_access"]["get"]["url"]
-    filename = "#{File.dirname(binary_id).parameterize}-#{File.basename(binary_id)}"
+    FileUtils.mkdir_p(File.join(dir_name, 'assets'))
+    filename = "assets/#{File.dirname(binary_id).parameterize}-#{File.basename(binary_id)}"
     uri = URI(url)
     Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
       request = Net::HTTP::Get.new(uri)
