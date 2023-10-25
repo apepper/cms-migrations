@@ -9,8 +9,14 @@ class ScrivitoExport
     api_key = ENV.fetch("SCRIVITO_API_KEY")
     api = RestApi.new(base_url, tenant, api_key)
 
-    raise "file '#{dir_name}' exists" if File.exist?(dir_name)
-    FileUtils.mkdir_p(dir_name)
+    if File.exist?(dir_name)
+      FileUtils.rm_rf(File.join(dir_name, "objs.json"))
+      FileUtils.rm_rf(File.join(dir_name, "custom_visibility_categories.json"))
+      FileUtils.rm_rf(File.join(dir_name, "assets"))
+      puts "Deleted old file(s) objs.json and custom_visibility_categories.json and folder assets"
+    else
+      FileUtils.mkdir_p(dir_name)
+    end
 
     visibility_categories_response = api.get("visibility_categories") || {}
     custom_visibility_categories = visibility_categories_response.fetch("results")
